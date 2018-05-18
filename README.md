@@ -27,7 +27,7 @@ You're reading it! Below I describe how I addressed each rubric point and where 
 ### Explain the Starter Code
 
 #### 1. Explain the functionality of what's provided in `motion_planning.py` and `planning_utils.py`
-The difference between motion_planning.py and backyard_flyer_solution.py is PLANNING state and plan_path() function. That function creates path from hardcoded start point to harcoded goal point usin A* algorithm without culling waypoints and diagonal motions. Functions provided in planning_utils.py are responsible for creating grid from csv file and A* algorithm.
+The difference between motion_planning.py and backyard_flyer_solution.py is PLANNING state and plan_path() function. That function creates path from hardcoded start point to harcoded goal point using A* algorithm without culling waypoints and diagonal motions. Functions provided in planning_utils.py are responsible for creating grid from csv file and A* algorithm.
 
 ### Implementing Your Path Planning Algorithm
 
@@ -128,7 +128,6 @@ Diagonal motion clears the jerky path of waypoints.
 ![With Diagonal](./misc/with_diagonal.png)
 
 #### 6. Cull waypoints 
-For this step you can use a collinearity test or ray tracing method like Bresenham. The idea is simply to prune your path of unnecessary waypoints. Explain the code you used to accomplish this step.
 I implemented both Collinearity and Bresenham. Both of them clear unnecessary waypoints, but some cases Collinearity method creates jerky path.
 For example when the goal position is hardcoded as some location 10 m north and 15 m east of map center, result of these tho methods are shown the figures below.
 
