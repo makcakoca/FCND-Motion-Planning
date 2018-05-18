@@ -27,8 +27,7 @@ You're reading it! Below I describe how I addressed each rubric point and where 
 ### Explain the Starter Code
 
 #### 1. Explain the functionality of what's provided in `motion_planning.py` and `planning_utils.py`
-	The difference between motion_planning.py and backyard_flyer_solution.py is PLANNING state and plan_path() function. That function creates path from hardcoded start point to harcoded goal point usin A* algorithm without culling waypoints and diagonal motions.
-	Functions provided in planning_utils.py are responsible for creating grid from csv file and A* algorithm.
+The difference between motion_planning.py and backyard_flyer_solution.py is PLANNING state and plan_path() function. That function creates path from hardcoded start point to harcoded goal point usin A* algorithm without culling waypoints and diagonal motions. Functions provided in planning_utils.py are responsible for creating grid from csv file and A* algorithm.
 
 ### Implementing Your Path Planning Algorithm
 
