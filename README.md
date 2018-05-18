@@ -128,7 +128,7 @@ Diagonal motion clears the jerky path of waypoints.
 ![With Diagonal](./misc/with_diagonal.png)
 
 #### 6. Cull waypoints 
-I implemented both Collinearity and Bresenham. Both of them clear unnecessary waypoints, but some cases Collinearity method creates jerky path.
+I implemented both Collinearity and Bresenham. Both of them clear unnecessary waypoints, but for some cases Collinearity method creates jerky path.
 For example when the goal position is hardcoded as some location 10 m north and 15 m east of map center, result of these tho methods are shown the figures below.
 
 Collinearity (pruned_path = prune_path(path))
