@@ -1,7 +1,7 @@
 from enum import Enum
 from queue import PriorityQueue
 import numpy as np
-
+from bresenham import bresenham
 
 def create_grid(data, drone_altitude, safety_distance):
     """
@@ -51,10 +51,14 @@ class Action(Enum):
     is the cost of performing the action.
     """
 
-    WEST = (0, -1, 1)
-    EAST = (0, 1, 1)
-    NORTH = (-1, 0, 1)
-    SOUTH = (1, 0, 1)
+    WEST = (0, -1, 1.)
+    EAST = (0, 1, 1.)
+    NORTH = (-1, 0, 1.)
+    SOUTH = (1, 0, 1.)
+    NORTH_EAST = (-1, 1, 1.414)
+    NORTH_WEST = (-1, -1, 1.414)
+    SOUTH_EAST = (1, 1, 1.414)
+    SOUTH_WEST = (1, -1, 1.414)
 
     @property
     def cost(self):
@@ -84,6 +88,14 @@ def valid_actions(grid, current_node):
         valid_actions.remove(Action.WEST)
     if y + 1 > m or grid[x, y + 1] == 1:
         valid_actions.remove(Action.EAST)
+    if (x - 1 < 0 or y + 1 > m) or grid[x - 1, y + 1] == 1:
+        valid_actions.remove(Action.NORTH_EAST)
+    if (x - 1 < 0 or y - 1 < 0) or grid[x - 1, y - 1] == 1:
+        valid_actions.remove(Action.NORTH_WEST)
+    if (x + 1 > n or y + 1 > m) or grid[x + 1, y + 1] == 1:
+        valid_actions.remove(Action.SOUTH_EAST)
+    if (x + 1 > n or y - 1 < 0) or grid[x + 1, y - 1] == 1:
+        valid_actions.remove(Action.SOUTH_WEST)           
 
     return valid_actions
 
@@ -144,3 +156,59 @@ def a_star(grid, h, start, goal):
 def heuristic(position, goal_position):
     return np.linalg.norm(np.array(position) - np.array(goal_position))
 
+def point(p):
+    return np.array([p[0], p[1], 1.]).reshape(1, -1)  
+
+def collinearity_check(p1, p2, p3, epsilon=1e-6):   
+    m = np.concatenate((p1, p2, p3), 0)
+    det = np.linalg.det(m)
+    return abs(det) < epsilon
+
+def prune_path(path):
+    pruned_path = [p for p in path]
+    
+    i = 0
+    while i < len(pruned_path) - 2:
+        p1 = point(pruned_path[i])
+        p2 = point(pruned_path[i+1])
+        p3 = point(pruned_path[i+2])
+        
+        # If the 3 points are in a line remove
+        # the 2nd point.
+        # The 3rd point now becomes and 2nd point
+        # and the check is redone with a new third point
+        # on the next iteration.
+        if collinearity_check(p1, p2, p3):
+            # Something subtle here but we can mutate
+            # `pruned_path` freely because the length
+            # of the list is check on every iteration.
+            pruned_path.remove(pruned_path[i+1])
+        else:
+            i += 1
+    return pruned_path     
+
+def bresenham_check(p1, p2, grid, epsilon=1e-6):
+    cells = list(bresenham(p1[0], p1[1], p2[0], p2[1]))
+    for q in cells:
+        if grid[q[0], q[1]] == 1:
+            return False
+    return True
+
+def prune_path_bres(path, grid):
+    pruned_path = [p for p in path]
+    
+    i = 0
+    while i < len(pruned_path) - 2:    
+        # If the 3 points are in a line remove
+        # the 2nd point.
+        # The 3rd point now becomes and 2nd point
+        # and the check is redone with a new third point
+        # on the next iteration.
+        if bresenham_check(pruned_path[i], pruned_path[i+2], grid):
+            # Something subtle here but we can mutate
+            # `pruned_path` freely because the length
+            # of the list is check on every iteration.
+            pruned_path.remove(pruned_path[i+1])
+        else:
+            i += 1
+    return pruned_path 
