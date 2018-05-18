@@ -188,8 +188,6 @@ class MotionPlanning(Drone):
                 self.is_goal_position_OK = False
             else: 
                 self.is_goal_position_OK = True
-        grid_goal = (-north_offset + 10, -east_offset + 10)
-        #grid_goal = (456, 567)
         
         # Run A* to find a path from start to goal
         # TODO: add diagonal motions with a cost of sqrt(2) to your A* implementation
@@ -199,7 +197,9 @@ class MotionPlanning(Drone):
         path, _ = a_star(grid, heuristic, grid_start, grid_goal)
 
         # prune path to minimize number of waypoints
+        # Collinearity
         #pruned_path = prune_path(path)
+        # Bresenham 
         pruned_path = prune_path_bres(path, grid)
 
         # Convert path to waypoints
